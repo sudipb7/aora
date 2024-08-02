@@ -3,17 +3,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, FlatList, Image, RefreshControl } from "react-native";
 
 import { images } from "../../constants";
+import { useGlobalContext } from "../../context/GlobalProvider";
 import { getAllPosts, getLatestPosts } from "../../lib/appwrite";
-import SearchInput from "../../components/SearchInput";
 import Trending from "../../components/Trending";
-import EmptyState from "../../components/EmptyState";
 import useAppWrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
+import EmptyState from "../../components/EmptyState";
+import SearchInput from "../../components/SearchInput";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { data: posts, isLoading, refetch } = useAppWrite(getAllPosts);
   const { data: latestPosts } = useAppWrite(getLatestPosts);
+  const { user, setIsLoggedIn, setUser } = useGlobalContext();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -32,10 +34,10 @@ const Home = () => {
             <View className="justify-between items-start flex-row mb-6">
               <View>
                 <Text className="font-pmedium text-sm text-gray-100">
-                  Welcome Back
+                  Welcome Back,
                 </Text>
                 <Text className="text-2xl font-psemibold text-white">
-                  Sudip
+                  {user?.username}
                 </Text>
               </View>
               <View className="mt-1.5">
