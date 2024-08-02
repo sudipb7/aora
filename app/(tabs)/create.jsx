@@ -7,8 +7,9 @@ import {
   Alert,
 } from "react-native";
 import { useState } from "react";
+import { router } from "expo-router";
 import { Video, ResizeMode } from "expo-av";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { icons } from "../../constants";
@@ -28,11 +29,13 @@ const Create = () => {
   });
 
   const openPicker = async (selectType) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type:
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes:
         selectType === "image"
-          ? ["image/png", "image/jpg", "image/jpeg"]
-          : ["video/mp4", "video/gif"],
+          ? ImagePicker.MediaTypeOptions.Images
+          : ImagePicker.MediaTypeOptions.Videos,
+      quality: 1,
+      aspect: [4, 3],
     });
 
     if (!result.canceled) {
@@ -55,7 +58,7 @@ const Create = () => {
     setUploading(true);
 
     try {
-      await createVideo({ ...form, userId: user.$id });
+      await createVideo({ ...form, userId: user?.$id });
       Alert.alert("Success", "Post uploaded successfully");
       router.push("/home");
     } catch (error) {

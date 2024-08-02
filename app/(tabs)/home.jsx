@@ -13,13 +13,14 @@ import SearchInput from "../../components/SearchInput";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { data: posts, isLoading, refetch } = useAppWrite(getAllPosts);
-  const { data: latestPosts } = useAppWrite(getLatestPosts);
-  const { user, setIsLoggedIn, setUser } = useGlobalContext();
+  const { data: posts, refetch: refetchAllPosts } = useAppWrite(getAllPosts);
+  const { data: latestPosts, refetch: refetchTrendingPosts } =
+    useAppWrite(getLatestPosts);
+  const { user } = useGlobalContext();
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await refetch();
+    await Promise.all([refetchAllPosts(), refetchTrendingPosts()]);
     setRefreshing(false);
   };
 
